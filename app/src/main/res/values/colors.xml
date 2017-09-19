@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+
+    <color name="white">#ffffff</color>
+
+    <color name="font_black">#333333</color>
+    // 字体 黑色
+    <color name="font_gray">#666666</color>
+    // 字体 灰色
+    <color name="font_light">#777777</color>
+    // 字体
+    <color name="font_lightgray">#999999</color>
+
+    <color name="default_text">#ff454545</color>
+
+
+</resources>
