@@ -73,13 +73,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
         layout_zhibo_intro.setLayoutParams(mParams);
         addContent(ll_zhibo_intro_outline,mData);
+        // 如果高度大于默认高度就收起，小于就展开
         ll_zhibo_intro.getViewTreeObserver().addOnGlobalLayoutListener(
                 new ViewTreeObserver.OnGlobalLayoutListener() {
                     @Override
                     public void onGlobalLayout() {
                         ll_zhibo_intro.getViewTreeObserver().removeGlobalOnLayoutListener(this);
                         mLayoutHeight = ll_zhibo_intro.getMeasuredHeight();
-                        // 如果高度大于默认高度就收起，小于就展开
                         if (mLayoutHeight <= mIntroHeight) {
                             iv_zhibo_intro_more.setVisibility(View.GONE);
                         } else {
