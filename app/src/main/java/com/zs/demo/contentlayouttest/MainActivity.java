@@ -1,11 +1,8 @@
 package com.zs.demo.contentlayouttest;
 
 import android.app.Activity;
-import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,13 +13,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Transformation;
 import com.zs.demo.contentlayouttest.util.DensityUtil;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.zs.demo.contentlayouttest.R.id.ll_zhibo_intro_sp_content;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -46,6 +40,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private String mText = " HBuilder是一款不错的开发工具，纵观，iOS开发的Xcode，Android开发的ADT、Studio，WP开发的VS。可以下载试玩，免环境安装，即可使用，内置Demo和教程。";
     private String mImage = "https://ss0.bdstatic.com/5aV1bjqh_Q23odCf/static/superman/img/logo/bd_logo1_31bdc765.png";
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,7 +55,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         iv_zhibo_intro_more.setOnClickListener(this);
 
         mIntroHeight = DensityUtil.dip2px(mActivity, 210);
-        mData.add(2);
+        mData.add(1);
         mData.add(2);
 
         setDetail();
@@ -118,6 +113,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             for (int i = 0; i < intro.size(); i++) {
                 int bean = intro.get(i);
                 if (bean == 1) {
+                    params.width = LinearLayout.LayoutParams.MATCH_PARENT;
                     TextView textView = new TextView(this);
                     textView.setText(mText);
                     textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
@@ -127,12 +123,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     layout.addView(textView);
 
                 } else if (bean == 2) {
+                    params.width = LinearLayout.LayoutParams.WRAP_CONTENT;
                     ImageView image = new ImageView(this);
                     // 当图片被盖住的时候，显示图片的顶部
                     image.setScaleType(ImageView.ScaleType.MATRIX);
                     image.setLayoutParams(params);
-                    // 一定要设置默认图片或者加个背景图片
                     // 页面首次打开，加载网络图片，获取不到图片的高度
+                    // 设置默认图片或者加个背景图片占着高度
                     Picasso.with(this)
                             .load(mImage)
                             .placeholder(R.drawable.default_image)
