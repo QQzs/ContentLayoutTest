@@ -110,7 +110,7 @@ private void setDetail(){
 ```
 然后是添加要显示的图文内容：
 需要注意的是图片的显示样式ScaleType，采用的是MATRIX，显示图片的顶部的内容，关于ScaleType，参考链接：
-[](https://www.2cto.com/kf/201411/348601.html)
+[ScaleType](https://www.2cto.com/kf/201411/348601.html)
 ```Java
 /**
      * 添加内容
