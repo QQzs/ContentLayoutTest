@@ -78,7 +78,109 @@
 
     </RelativeLayout>
 ```
+## 代码部分：
+首先是判断内容高度部分，需要注意的是不能直接用View.getHeight()、View.getMeasuredWidth()去获取高度，因为是动态添加数据的view，数据，获取的高度肯定是错的，这里采用的是getViewTreeObserver().addOnGlobalLayoutListener方式。
+```Java
+private void setDetail(){
+        mParams = layout_zhibo_intro.getLayoutParams();
+        mParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+        mParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
+        layout_zhibo_intro.setLayoutParams(mParams);
+        addContent(ll_zhibo_intro_outline,mData);
+        // 如果高度大于默认高度就收起，小于就展开
+        ll_zhibo_intro.getViewTreeObserver().addOnGlobalLayoutListener(
+                new ViewTreeObserver.OnGlobalLayoutListener() {
+                    @Override
+                    public void onGlobalLayout() {
+                        ll_zhibo_intro.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                        mLayoutHeight = ll_zhibo_intro.getMeasuredHeight();
+                        if (mLayoutHeight <= mIntroHeight) {
+                            tv_zhibo_intro_more.setVisibility(View.GONE);
+                        } else {
+                            mFlagShow = false;
+                            mParams.height = mIntroHeight;
+                            mParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
+                            layout_zhibo_intro.setLayoutParams(mParams);
+                                tv_zhibo_intro_more.setVisibility(View.VISIBLE);
+                            setMoreLayout();
+                        }
+                    }
+                });
+    }
+```
+然后是添加要显示的图文内容：
+需要注意的是图片的显示样式ScaleType，采用的是MATRIX，显示图片的顶部的内容，关于ScaleType，参考链接：
+[](https://www.2cto.com/kf/201411/348601.html)
+```Java
+/**
+     * 添加内容
+     * @param layout
+     * @param intro
+     */
+    private void addContent(LinearLayout layout, List<Integer> intro){
 
+        layout.removeAllViews();
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        params.bottomMargin = DensityUtil.dip2px(mActivity, 8);
+        if (intro == null || intro.size() == 0) {
+            TextView textView = new TextView(this);
+            textView.setText("暂无内容");
+            textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
+            textView.setLineSpacing(1, 1.25f);
+            textView.setTextColor(getResources().getColor(R.color.font_lightgray));
+            params.width = LinearLayout.LayoutParams.MATCH_PARENT;
+            textView.setLayoutParams(params);
+            layout.addView(textView);
+        } else {
+            for (int i = 0; i < intro.size(); i++) {
+                int bean = intro.get(i);
+                if (bean == 1) {
+                    params.width = LinearLayout.LayoutParams.MATCH_PARENT;
+                    TextView textView = new TextView(this);
+                    textView.setText(mText);
+                    textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
+                    textView.setLineSpacing(1, 1.25f);
+                    textView.setTextColor(getResources().getColor(R.color.font_gray));
+                    textView.setLayoutParams(params);
+                    layout.addView(textView);
 
+                } else if (bean == 2) {
+                    params.width = LinearLayout.LayoutParams.WRAP_CONTENT;
+                    ImageView image = new ImageView(this);
+                    // 当图片被盖住的时候，显示图片的顶部
+                    image.setScaleType(ImageView.ScaleType.MATRIX);
+                    image.setLayoutParams(params);
+                    // 页面首次打开，加载网络图片，获取不到图片的高度
+                    // 设置默认图片或者加个背景图片占着高度
+                    Picasso.with(this)
+                            .load(mImage)
+                            .placeholder(R.drawable.default_image)
+                            .into(image);
+                    layout.addView(image);
+                }
+            }
+        }
+
+    }
+    
+    /**
+     * 设置收起展开状态
+     */
+    private void setMoreLayout(){
+        Drawable drawable;
+        if (mFlagShow){
+            tv_zhibo_intro_more.setText("收起");
+            drawable = getResources().getDrawable(R.mipmap.zhibo_more_shouqi);
+        }else{
+            tv_zhibo_intro_more.setText("展开");
+            drawable = getResources().getDrawable(R.mipmap.zhibo_more);
+        }
+        // 这一步必须要做,否则不会显示.
+        drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
+        tv_zhibo_intro_more.setCompoundDrawables(drawable,null,null,null);
+    }
+```
+## 不足之处
+没加展开收起的动态效果，比较生硬
 
 
