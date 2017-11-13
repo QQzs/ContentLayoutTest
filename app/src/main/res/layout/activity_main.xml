@@ -7,69 +7,72 @@
     tools:context="com.zs.demo.contentlayouttest.MainActivity">
 
     <RelativeLayout
-        android:id="@+id/layout_zhibo_intro"
+    android:id="@+id/layout_zhibo_intro"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="12dp"
+    android:background="@color/white"
+    android:paddingLeft="14dp"
+    android:paddingRight="14dp"
+    android:animateLayoutChanges="true"
+    android:orientation="vertical"
+    android:visibility="visible"
+    android:layout_alignParentTop="true"
+    android:layout_alignParentLeft="true"
+    android:layout_alignParentStart="true">
+
+    <LinearLayout
+        android:id="@+id/ll_zhibo_intro"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:background="@color/white"
-        android:paddingLeft="14dp"
-        android:paddingRight="14dp"
-        android:animateLayoutChanges="true"
         android:orientation="vertical"
         android:visibility="visible"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true">
+        android:paddingBottom="28dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:drawableLeft="@mipmap/zhibo_xilieke_jianjie_icon"
+            android:drawablePadding="9dp"
+            android:text="简介"
+            android:textColor="@color/default_text"
+            android:textSize="@dimen/fontsize15" />
 
         <LinearLayout
-            android:id="@+id/ll_zhibo_intro"
+            android:id="@+id/ll_zhibo_intro_outline"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:visibility="visible"
-            android:paddingBottom="28dp">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:drawableLeft="@mipmap/zhibo_xilieke_jianjie_icon"
-                android:drawablePadding="9dp"
-                android:text="简介"
-                android:textColor="@color/default_text"
-                android:textSize="@dimen/fontsize15" />
+            android:layout_marginTop="8dp"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
 
-            <LinearLayout
-                android:id="@+id/ll_zhibo_intro_outline"
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:gravity="center_horizontal"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textSize="@dimen/fontsize14"
-                    android:layout_marginBottom="8dp"
-                    android:lineSpacingMultiplier="1.25"
-                    android:text="暂无内容"
-                    android:textColor="@color/font_lightgray"
-                    />
-
-            </LinearLayout>
+                android:textSize="@dimen/fontsize14"
+                android:layout_marginBottom="8dp"
+                android:lineSpacingMultiplier="1.25"
+                android:text="暂无内容"
+                android:textColor="@color/font_lightgray"
+                />
 
         </LinearLayout>
 
-        <ImageView
-            android:id="@+id/iv_zhibo_intro_more"
-            android:layout_width="match_parent"
-            android:layout_height="28dp"
-            android:paddingBottom="6dp"
-            android:layout_alignBottom="@+id/ll_zhibo_intro"
-            android:src="@mipmap/zhibo_more"
-            android:visibility="gone"
-            />
+    </LinearLayout>
 
-    </RelativeLayout>
+    <TextView
+        android:id="@+id/tv_zhibo_intro_more"
+        android:layout_width="wrap_content"
+        android:layout_height="28dp"
+        android:paddingBottom="6dp"
+        android:layout_centerHorizontal="true"
+        android:layout_alignBottom="@+id/ll_zhibo_intro"
+        android:text="展开"
+        android:drawableLeft="@mipmap/zhibo_more"
+        android:drawablePadding="6dp"
+        android:visibility="visible"
+        />
+
+</RelativeLayout>
 
 </RelativeLayout>

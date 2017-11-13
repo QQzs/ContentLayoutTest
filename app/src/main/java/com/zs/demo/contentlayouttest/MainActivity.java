@@ -1,6 +1,7 @@
 package com.zs.demo.contentlayouttest;
 
 import android.app.Activity;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.TypedValue;
@@ -18,12 +19,13 @@ import com.zs.demo.contentlayouttest.util.DensityUtil;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private RelativeLayout layout_zhibo_intro;
     private LinearLayout ll_zhibo_intro;
     private LinearLayout ll_zhibo_intro_outline;
-    private ImageView iv_zhibo_intro_more;
+    private TextView tv_zhibo_intro_more;
 
     private List<Integer> mData = new ArrayList<>();
 
@@ -38,7 +40,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ViewGroup.LayoutParams mParams;
 
     private String mText = " HBuilder是一款不错的开发工具，纵观，iOS开发的Xcode，Android开发的ADT、Studio，WP开发的VS。可以下载试玩，免环境安装，即可使用，内置Demo和教程。";
-    private String mImage = "https://ss0.bdstatic.com/5aV1bjqh_Q23odCf/static/superman/img/logo/bd_logo1_31bdc765.png";
+    private String mImage = "https://ss2.baidu.com/6ONYsjip0QIZ8tyhnq/it/u=4126321865,2582840083&fm=173&s=D096189A578546EEDE75B9D003009035&w=622&h=485&img.PNG";
 
 
     @Override
@@ -50,9 +52,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         layout_zhibo_intro = (RelativeLayout) findViewById(R.id.layout_zhibo_intro);
         ll_zhibo_intro = (LinearLayout) findViewById(R.id.ll_zhibo_intro);
         ll_zhibo_intro_outline = (LinearLayout) findViewById(R.id.ll_zhibo_intro_outline);
-        iv_zhibo_intro_more = (ImageView) findViewById(R.id.iv_zhibo_intro_more);
+        tv_zhibo_intro_more = (TextView) findViewById(R.id.tv_zhibo_intro_more);
 
-        iv_zhibo_intro_more.setOnClickListener(this);
+        tv_zhibo_intro_more.setOnClickListener(this);
 
         mIntroHeight = DensityUtil.dip2px(mActivity, 210);
         mData.add(1);
@@ -76,14 +78,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         ll_zhibo_intro.getViewTreeObserver().removeGlobalOnLayoutListener(this);
                         mLayoutHeight = ll_zhibo_intro.getMeasuredHeight();
                         if (mLayoutHeight <= mIntroHeight) {
-                            iv_zhibo_intro_more.setVisibility(View.GONE);
+                            tv_zhibo_intro_more.setVisibility(View.GONE);
                         } else {
                             mFlagShow = false;
                             mParams.height = mIntroHeight;
                             mParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
                             layout_zhibo_intro.setLayoutParams(mParams);
-                            iv_zhibo_intro_more.setImageResource(R.mipmap.zhibo_more);
-                            iv_zhibo_intro_more.setVisibility(View.VISIBLE);
+                                tv_zhibo_intro_more.setVisibility(View.VISIBLE);
+                            setMoreLayout();
                         }
                     }
                 });
@@ -139,30 +141,45 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
 
-
     }
 
     @Override
     public void onClick(View view) {
 
         switch (view.getId()){
-            case R.id.iv_zhibo_intro_more:
+            case R.id.tv_zhibo_intro_more:
                 if (mFlagShow) { // 收起
                     mFlagShow = false;
                     ViewGroup.LayoutParams params = layout_zhibo_intro.getLayoutParams();
                     params.height = mIntroHeight;
                     params.width = ViewGroup.LayoutParams.MATCH_PARENT;
                     layout_zhibo_intro.setLayoutParams(params);
-                    iv_zhibo_intro_more.setImageResource(R.mipmap.zhibo_more);
                 } else {    // 展开
                     mFlagShow = true;
                     ViewGroup.LayoutParams params = layout_zhibo_intro.getLayoutParams();
                     params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
                     params.width = ViewGroup.LayoutParams.MATCH_PARENT;
                     layout_zhibo_intro.setLayoutParams(params);
-                    iv_zhibo_intro_more.setImageResource(R.mipmap.zhibo_more_shouqi);
                 }
+                setMoreLayout();
                 break;
         }
+    }
+
+    /**
+     * 设置收起展开状态
+     */
+    private void setMoreLayout(){
+        Drawable drawable;
+        if (mFlagShow){
+            tv_zhibo_intro_more.setText("收起");
+            drawable = getResources().getDrawable(R.mipmap.zhibo_more_shouqi);
+        }else{
+            tv_zhibo_intro_more.setText("展开");
+            drawable = getResources().getDrawable(R.mipmap.zhibo_more);
+        }
+        // 这一步必须要做,否则不会显示.
+        drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
+        tv_zhibo_intro_more.setCompoundDrawables(drawable,null,null,null);
     }
 }
