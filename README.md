@@ -2,10 +2,10 @@
 # 图文混排内容展开收起
 
 ## 效果图
-![](https://github.com/QQzs/Image/blob/master/ContentLayoutTest/content_layout_show.gif)<br>
+![](https://github.com/QQzs/Image/blob/master/ContentLayoutTest/content_anim_show.gif)<br>
 发长微博时，内容过多，在显示的时候，会有展开收起状态，这个项目就是解决展示内容是图文混排的情况，上面是效果图。<br>
 把要显示的数据，动态的添加，设置一个临界的高度，当要显示的数据不够这个高度，就不显示收起展开的按钮，如果要显示的内容超出这个临界高度，
-就显示这个高度，多余的内容遮盖。主要特殊的处理是在显示遮盖图片的地方。
+就显示这个高度，多余的内容遮盖，展开和收起布局有动态的效果。
 
 布局文件：
 ```Java
@@ -13,30 +13,26 @@
         android:id="@+id/layout_zhibo_intro"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
         android:background="@color/white"
-        android:paddingLeft="14dp"
-        android:paddingRight="14dp"
-        android:animateLayoutChanges="true"
         android:orientation="vertical"
-        android:visibility="visible"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true">
+        android:paddingLeft="14dp"
+        android:paddingRight="14dp">
 
         <LinearLayout
             android:id="@+id/ll_zhibo_intro"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:visibility="visible"
             android:paddingBottom="28dp">
+
             <TextView
+                android:id="@+id/tv_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
                 android:drawableLeft="@mipmap/zhibo_xilieke_jianjie_icon"
                 android:drawablePadding="9dp"
+                android:paddingBottom="8dp"
+                android:paddingTop="12dp"
                 android:text="简介"
                 android:textColor="@color/default_text"
                 android:textSize="@dimen/fontsize15" />
@@ -45,36 +41,43 @@
                 android:id="@+id/ll_zhibo_intro_outline"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
                 android:gravity="center_horizontal"
                 android:orientation="vertical">
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="@dimen/fontsize14"
                     android:layout_marginBottom="8dp"
                     android:lineSpacingMultiplier="1.25"
                     android:text="暂无内容"
                     android:textColor="@color/font_lightgray"
-                    />
-
+                    android:textSize="@dimen/fontsize14" />
             </LinearLayout>
 
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/tv_zhibo_intro_more"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/ll_zhibo_intro_more"
+            android:layout_width="match_parent"
             android:layout_height="28dp"
-            android:paddingBottom="6dp"
-            android:layout_centerHorizontal="true"
-            android:layout_alignBottom="@+id/ll_zhibo_intro"
-            android:text="展开"
-            android:drawableLeft="@mipmap/zhibo_more"
-            android:drawablePadding="6dp"
-            android:visibility="visible"
-            />
+            android:gravity="center"
+            android:layout_alignBottom="@+id/ll_zhibo_intro">
+
+            <ImageView
+                android:id="@+id/iv_zhibo_intro_more"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/zhibo_more"/>
+
+            <TextView
+                android:id="@+id/tv_zhibo_intro_more"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:text="展开"
+                android:layout_marginLeft="8dp"/>
+
+        </LinearLayout>
 
     </RelativeLayout>
 ```
@@ -93,8 +96,8 @@ private void setDetail(){
                     @Override
                     public void onGlobalLayout() {
                         ll_zhibo_intro.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                        mLayoutHeight = ll_zhibo_intro.getMeasuredHeight();
-                        if (mLayoutHeight <= mIntroHeight) {
+                        mHeight = getLayoutHeight();
+                        if (mHeight <= mIntroHeight) {
                             tv_zhibo_intro_more.setVisibility(View.GONE);
                         } else {
                             mFlagShow = false;
@@ -167,20 +170,94 @@ private void setDetail(){
      * 设置收起展开状态
      */
     private void setMoreLayout(){
-        Drawable drawable;
         if (mFlagShow){
             tv_zhibo_intro_more.setText("收起");
-            drawable = getResources().getDrawable(R.mipmap.zhibo_more_shouqi);
+            animationIvOpen();
         }else{
             tv_zhibo_intro_more.setText("展开");
-            drawable = getResources().getDrawable(R.mipmap.zhibo_more);
-        }
-        // 这一步必须要做,否则不会显示.
-        drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
-        tv_zhibo_intro_more.setCompoundDrawables(drawable,null,null,null);
+            animationIvClose();
+        }   
     }
 ```
-## 不足之处
-没加展开收起的动态效果，比较生硬
+获取全部内容的高度这个地方，一定要算的准确了，这个项目中计算的是标题的高度加上给底部展开按钮空出的高度，再加上每一段文字或者图片的高度，和每一段之间空出的8dp的高度，要添加的图片数据的中要包括图片的高度，如果是服务器中返回的也要带着高度。
+```Java
+/**
+     * 获取全部内容的高度
+     * @return
+     */
+    private int getLayoutHeight(){
+        int height = tv_title.getMeasuredHeight() + DensityUtil.dip2px(this,28) + ll_zhibo_intro_outline.getChildCount() * DensityUtil.dip2px(this,8);
+        for (int i = 0; i< ll_zhibo_intro_outline.getChildCount(); i ++ ){
+            if (mData.get(i) == 1){
+                height += ll_zhibo_intro_outline.getChildAt(i).getMeasuredHeight();
+            }else{
+                // demo中图片高度，按实际为准
+                height += 485;
+            }
+        }
+        return height;
+    }
+```
+下面是添加的动画效果：
+```Java
+/**
+     * 展开布局
+     * @param view
+     */
+    private void animateOpen(View view) {
+        ValueAnimator animator = createDropAnimator(view, mIntroHeight,mHeight);
+        animator.start();
+    }
+
+    /**
+     * 收起布局
+     * @param view
+     */
+    private void animateClose(final View view) {
+        ValueAnimator animator = createDropAnimator(view, mHeight, mIntroHeight);
+        animator.start();
+    }
+
+    private ValueAnimator createDropAnimator(final View v, int start, int end) {
+        ValueAnimator animator = ValueAnimator.ofInt(start, end);
+        animator.setDuration(1000);
+        animator.setInterpolator(new AccelerateInterpolator());
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+
+            @Override
+            public void onAnimationUpdate(ValueAnimator arg0) {
+                int value = (int) arg0.getAnimatedValue();
+                ViewGroup.LayoutParams layoutParams = v.getLayoutParams();
+                layoutParams.height = value;
+                v.setLayoutParams(layoutParams);
+            }
+        });
+        return animator;
+    }
+
+    /**
+     * view展开 图标旋转动画
+     */
+    private void animationIvOpen() {
+        RotateAnimation animation = new RotateAnimation(0, 180,
+                Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF,
+                0.5f);
+        animation.setFillAfter(true);
+        animation.setDuration(300);
+        iv_zhibo_intro_more.startAnimation(animation);
+    }
+
+    /**
+     * view收起 图标旋转动画
+     */
+    private void animationIvClose() {
+        RotateAnimation animation = new RotateAnimation(180, 0,
+                Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF,
+                0.5f);
+        animation.setFillAfter(true);
+        animation.setDuration(200);
+        iv_zhibo_intro_more.startAnimation(animation);
+    }
+```
 
 
