@@ -4,6 +4,7 @@ import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
@@ -88,6 +89,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
         layout_zhibo_intro.setLayoutParams(mParams);
         addContent(ll_zhibo_intro_outline,mData);
+
+        Log.d("My_Log","he == "+ ll_zhibo_intro.getMeasuredHeight());
+        int h = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+        ll_zhibo_intro.measure(h, 0);
+        Log.d("My_Log","he over == "+ ll_zhibo_intro.getMeasuredHeight());
+
         // 如果高度大于默认高度就收起，小于就展开
         ll_zhibo_intro.getViewTreeObserver().addOnGlobalLayoutListener(
                 new ViewTreeObserver.OnGlobalLayoutListener() {
