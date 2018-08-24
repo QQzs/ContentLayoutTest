@@ -78,6 +78,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mData.add(1);
         mData.add(2);
         mData.add(1);
+        mData.add(2);
+        mData.add(1);
+        mData.add(2);
+        mData.add(1);
 
         setDetail();
 
